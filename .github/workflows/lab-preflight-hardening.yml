@@ -1,0 +1,23 @@
+name: Lot B preflight security tests (audit only)
+
+on:
+  push:
+    branches:
+      - audit/lot-b-preflight-hardening-20261104
+
+permissions:
+  contents: read
+
+jobs:
+  preflight-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 pinned
+        with:
+          persist-credentials: false
+      - name: Run isolated security tests (no agents, no secrets)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONNOUSERSITE: '1'
+        run: python3 -m unittest discover -s tests -p 'test_lab_preflight.py' -v
